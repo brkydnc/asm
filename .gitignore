@@ -1,4 +1,5 @@
 *.dylib
 *.o
 *.out
+*.dSYM
 output

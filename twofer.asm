@@ -12,27 +12,34 @@ _two_fer:
 
     ; Copy the prologue into the buffer
     mov rdi, rsi    
-    mov rsi, [rel prologue]
+    lea rsi, [rel prologue]
     call strcopy
 
-    ; Determine if the name argument is null or valid
+    ; Determine if the name argument is valid or null (invalid)
     pop rsi
     cmp rsi, 0
     jne tmp
-    mov rsi, [rel you]
+
+    ; If it is not valid, replace it with "you"
+    lea rsi, [rel you]
 tmp:
+    dec rax
+    add rdi, rax
     call strcopy
 
-    mov rsi, [rel epilogue]
+    dec rax
+    add rdi, rax
+    lea rsi, [rel epilogue]
     call strcopy
     ret
 
 strcopy:
-    xor rdx, rdx
-    mov al, BYTE [rdi + rdx]
-    mov BYTE [rsi + rdx], al
-    inc rdx
-    cmp rax, 0
-    jne strcopy
+    xor rax, rax
+for_loop:
+    mov dl, BYTE [rsi + rax]
+    mov BYTE [rdi + rax], dl
+    inc rax
+    cmp dl, 0
+    jne for_loop
     ret
 
